@@ -36,7 +36,46 @@ def intro_label_color():  # for colorize slider
     SliderLabel.after(20, intro_label_color)
 
 
+con = ''
+my_cursor = ''
+
+
 def connect_db():  # for connect button
+    def submit_db():
+        # fetching the entry values
+        global con, my_cursor
+        host = host_value.get()
+        user = user_value.get()
+        password = password_value.get()
+
+        try:
+            con = pymysql.connect(host=host, user=user, password=password)
+            my_cursor = con.cursor()
+        except:
+            messagebox.showerror('Notification', 'Data is incorrect Please try again')
+            return
+
+        try:
+            query = 'create database studentmanagementsystem'
+            my_cursor.execute(query=query)
+            query1 = 'use studentmanagementsystem'
+            my_cursor.execute(query=query1)
+            query2 = 'create table studentdata(id int primary key not null, name varchar(20) , mobile varchar(12), ' \
+                     'email varchar(30), address varchar(100), gender varchar(10), dob varchar(50), ' \
+                     'date varchar(50), time varchar(50))'
+            my_cursor.execute(query=query2)
+
+            messagebox.showinfo('Notification', 'Database created and now you are connected to database',
+                                parent=db_root)
+
+        except:
+            query3 = 'use studentmanagementsystem'
+            my_cursor.execute(query3)
+
+            messagebox.showinfo('Notification', 'Database Connected')
+
+        db_root.destroy()
+
     db_root = Toplevel()
     db_root.config(bg='grey')
     db_root.geometry('500x250+800+100')
@@ -73,7 +112,7 @@ def connect_db():  # for connect button
 
     # -------------------------------connect button---------------------
     submit_button = Button(db_root, text='Connect', font='roman 15 bold', width=15, bd=5, activebackground='red',
-                           activeforeground='white', bg='powderblue')
+                           activeforeground='white', bg='powderblue', command=submit_db)
     submit_button.place(x=150, y=180)
 
     db_root.mainloop()
@@ -82,7 +121,39 @@ def connect_db():  # for connect button
 # -----------------------------------function for data entry labels---------------------------------
 def add_student():
     def submit_add():
-        pass
+        id = id_value.get()
+        name = name_value.get()
+        mobile = mobile_value.get()
+        email = email_value.get()
+        address = address_value.get()
+        gender = gender_value.get()
+        dob = dob_value.get()
+        added_time = time.strftime("%H:%M:%S")
+        added_date = time.strftime("%d/%m/%Y")
+        try:
+            query = 'insert into studentdata values(%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+            my_cursor.execute(query, (id, name, mobile, email, address, gender, dob, added_date, added_time))
+            con.commit()
+            res = messagebox.askyesnocancel('Notification', 'Id {} Name {} Added successfully.. and want to / '
+                                                            'clean form'.format(id, name), parent=add_root)
+            if res:
+                id_value.set('')
+                name_value.set('')
+                mobile_value.set('')
+                email_value.set('')
+                address_value.set('')
+                gender_value.set('')
+                dob_value.set('')
+        except:
+            messagebox.showerror('Notification', 'Id already exist try other Id...', parent=add_root)
+
+        query1 = 'select * from studentdata'
+        my_cursor.execute(query1)
+        data = my_cursor.fetchall()
+        student_table.delete(*student_table.get_children())
+        for i in data:
+            lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+            student_table.insert('', END, values=lst)
 
     add_root = Toplevel(master=DataEntryFrame)
     add_root.config(bg='grey')
@@ -160,7 +231,14 @@ def add_student():
 
 def search_student():
     def submit_search():
-        pass
+        id_value.get()
+        name_value.get()
+        mobile_value.get()
+        email_value.get()
+        address_value.get()
+        gender_value.get()
+        dob_value.get()
+        date_value.get()
 
     search_root = Toplevel(master=DataEntryFrame)
     search_root.config(bg='grey')
@@ -405,7 +483,6 @@ exit_button.pack(side=TOP, expand=True)
 ShowDataFrame = Frame(root, bg='white', relief=GROOVE, borderwidth=5)
 ShowDataFrame.place(x=600, y=100, width=890, height=650)
 
-
 # -----------------------------------Creating Tree view in show dataframe-----------------------------------
 style = ttk.Style()
 style.configure('Treeview.Heading', font='chiller 20 bold', foreground='blue')  # change style of tree view headings
@@ -434,7 +511,7 @@ student_table.heading('D.O.B', text='D.O.B')
 student_table.heading('Added Date', text='Added Date')
 student_table.heading('Added Time', text='Added Time')
 
-student_table['show'] = 'headings'           # show only headings remove extra column
+student_table['show'] = 'headings'  # show only headings remove extra column
 
 # ---------set width of columns-------------
 student_table.column('Id', width=50)
@@ -443,8 +520,8 @@ student_table.column('Mobile No.', width=120)
 student_table.column('Email', width=250)
 student_table.column('Address', width=250)
 student_table.column('Gender', width=100)
-student_table.column('D.O.B', width=100)
-student_table.column('Added Date', width=150)
+student_table.column('D.O.B', width=150)
+student_table.column('Added Date', width=170)
 student_table.column('Added Time', width=150)
 
 student_table.pack(fill=BOTH, expand=1)
