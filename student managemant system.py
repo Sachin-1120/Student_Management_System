@@ -1,10 +1,11 @@
 import time
 import random
 import pymysql
+import pandas as pd
 from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import Treeview
-from tkinter import Toplevel, messagebox
+from tkinter import Toplevel, messagebox, filedialog
 
 
 def date_time():  # for configure clock
@@ -231,14 +232,86 @@ def add_student():
 
 def search_student():
     def submit_search():
-        id_value.get()
-        name_value.get()
-        mobile_value.get()
-        email_value.get()
-        address_value.get()
-        gender_value.get()
-        dob_value.get()
-        date_value.get()
+        id = id_value.get()
+        name = name_value.get()
+        mobile = mobile_value.get()
+        email = email_value.get()
+        address = address_value.get()
+        gender = gender_value.get()
+        dob = dob_value.get()
+        date = time.strftime("%d/%m/%Y")
+
+        if id != '':
+            query = 'select * from studentdata where id=%s'
+            my_cursor.execute(query, (id))
+            data = my_cursor.fetchall()
+            student_table.delete(*student_table.get_children())
+            for i in data:
+                lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+                student_table.insert('', END, values=lst)
+
+        elif name != '':
+            query1 = 'select * from studentdata where name=%s'
+            my_cursor.execute(query1, (name))
+            data1 = my_cursor.fetchall()
+            student_table.delete(*student_table.get_children())
+            for i in data1:
+                lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+                student_table.insert('', END, values=lst)
+
+        elif mobile != '':
+            query2 = 'select * from studentdata where mobile=%s'
+            my_cursor.execute(query2, (mobile))
+            data2 = my_cursor.fetchall()
+            student_table.delete(*student_table.get_children())
+            for i in data2:
+                lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+                student_table.insert('', END, values=lst)
+
+        elif email != '':
+            query3 = 'select * from studentdata where email=%s'
+            my_cursor.execute(query3, (email))
+            data3 = my_cursor.fetchall()
+            student_table.delete(*student_table.get_children())
+            for i in data3:
+                lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+                student_table.insert('', END, values=lst)
+
+        elif address != '':
+            query4 = 'select * from studentdata where address=%s'
+            my_cursor.execute(query4, (address))
+            data4 = my_cursor.fetchall()
+            student_table.delete(*student_table.get_children())
+            for i in data4:
+                lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+                student_table.insert('', END, values=lst)
+
+        elif gender != '':
+            query5 = 'select * from studentdata where gender=%s'
+            my_cursor.execute(query5, (gender))
+            data5 = my_cursor.fetchall()
+            student_table.delete(*student_table.get_children())
+            for i in data5:
+                lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+                student_table.insert('', END, values=lst)
+
+        elif dob != '':
+            query6 = 'select * from studentdata where dob=%s'
+            my_cursor.execute(query6, (dob))
+            data6 = my_cursor.fetchall()
+            student_table.delete(*student_table.get_children())
+            for i in data6:
+                lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+                student_table.insert('', END, values=lst)
+
+        elif date != '':
+            query7 = 'select * from studentdata where date=%s'
+            my_cursor.execute(query7, (date))
+            data7 = my_cursor.fetchall()
+            student_table.delete(*student_table.get_children())
+            for i in data7:
+                lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+                student_table.insert('', END, values=lst)
 
     search_root = Toplevel(master=DataEntryFrame)
     search_root.config(bg='grey')
@@ -326,12 +399,49 @@ def search_student():
 
 
 def delete_student():
-    pass
+    item = student_table.focus()  # find location of selected data
+    content = student_table.item(item)  # get the content of that location
+    # print(content)      # dict
+    id_n = content['values'][0]
+    query = 'delete from studentdata where id=%s'
+    my_cursor.execute(query, (id_n))
+    con.commit()
+    messagebox.showinfo('Notification', 'Id {} deleted successfully...'.format(id_n))
+    query1 = 'select * from studentdata'
+    my_cursor.execute(query1)
+    data = my_cursor.fetchall()
+    student_table.delete(*student_table.get_children())
+    for i in data:
+        lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+        student_table.insert('', END, values=lst)
 
 
 def update_student():
     def submit_update():
-        pass
+        id = id_value.get()
+        name = name_value.get()
+        mobile = mobile_value.get()
+        email = email_value.get()
+        address = address_value.get()
+        gender = gender_value.get()
+        dob = dob_value.get()
+        date = date_value.get()
+        time = time_value.get()
+
+        query = 'update studentdata set name=%s, mobile=%s, email=%s, address=%s, gender=%s, dob=%s, date=%s, ' \
+                'time=%s where id=%s'
+        my_cursor.execute(query, (name, mobile, email, address, gender, dob, date, time, id))
+        con.commit()
+
+        messagebox.showinfo('Notification', 'Id {} updated successfully...'.format(id))
+
+        query1 = 'select * from studentdata'
+        my_cursor.execute(query1)
+        data1 = my_cursor.fetchall()
+        student_table.delete(*student_table.get_children())
+        for i in data1:
+            lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+            student_table.insert('', END, values=lst)
 
     update_root = Toplevel(master=DataEntryFrame)
     update_root.config(bg='grey')
@@ -423,15 +533,56 @@ def update_student():
                            activeforeground='white', bg='powderblue', command=submit_update)
     submit_button.place(x=150, y=480)
 
+    item = student_table.focus()
+    content = student_table.item(item)
+    data = content['values']
+    if len(data) != 0:
+        id_value.set(data[0])
+        name_value.set(data[1])
+        mobile_value.set(data[2])
+        email_value.set(data[3])
+        address_value.set(data[4])
+        gender_value.set(data[5])
+        dob_value.set(data[6])
+        date_value.set(data[7])
+        time_value.set(data[8])
+
     update_root.mainloop()
 
 
 def show_student():
-    pass
+    query = 'select * from studentdata'
+    my_cursor.execute(query)
+    data = my_cursor.fetchall()
+    student_table.delete(*student_table.get_children())
+    for i in data:
+        lst = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]]
+        student_table.insert('', END, values=lst)
 
 
 def export_student():
-    pass
+    file = filedialog.asksaveasfilename()
+    data = student_table.get_children()   # tuple of locations of data
+    # print(data)
+    id, name, mobile, email, address, gender, dob, added_date, added_time = [], [], [], [], [], [], [], [], []
+
+    for i in data:
+        content = student_table.item(i)         # access content from locations
+        values = content['values']
+
+        id.append(values[0]), name.append(values[1]), mobile.append(values[2]), email.append(values[3]), \
+            address.append(values[4]), gender.append(values[5]), dob.append(values[6]), added_date.append(values[7]), \
+            added_time.append(values[8])
+
+    headings = ['Id', 'Name', 'mobile', 'Email', 'Address', 'Gender', 'D.O.B', 'Added Date', 'Added Time']
+
+    df = pd.DataFrame(list(zip(id, name, mobile, email, address, gender, dob, added_date, added_time)),
+                      columns=headings)
+
+    path = r'{}.csv'.format(file)
+    df.to_csv(path, index=False)
+
+    messagebox.showinfo('Notification', 'Student data is saved {}'.format(path))
 
 
 def exit_student():
@@ -514,11 +665,11 @@ student_table.heading('Added Time', text='Added Time')
 student_table['show'] = 'headings'  # show only headings remove extra column
 
 # ---------set width of columns-------------
-student_table.column('Id', width=50)
+student_table.column('Id', width=70)
 student_table.column('Name', width=200)
-student_table.column('Mobile No.', width=120)
-student_table.column('Email', width=250)
-student_table.column('Address', width=250)
+student_table.column('Mobile No.', width=150)
+student_table.column('Email', width=300)
+student_table.column('Address', width=300)
 student_table.column('Gender', width=100)
 student_table.column('D.O.B', width=150)
 student_table.column('Added Date', width=170)
