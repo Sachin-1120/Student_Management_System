@@ -665,15 +665,15 @@ student_table.heading('Added Time', text='Added Time')
 student_table['show'] = 'headings'  # show only headings remove extra column
 
 # ---------set width of columns-------------
-student_table.column('Id', width=70)
-student_table.column('Name', width=200)
-student_table.column('Mobile No.', width=150)
-student_table.column('Email', width=300)
-student_table.column('Address', width=300)
-student_table.column('Gender', width=100)
-student_table.column('D.O.B', width=150)
-student_table.column('Added Date', width=170)
-student_table.column('Added Time', width=150)
+student_table.column('Id', width=70, anchor='c')
+student_table.column('Name', width=200, anchor='c')
+student_table.column('Mobile No.', width=150, anchor='c')
+student_table.column('Email', width=300, anchor='c')
+student_table.column('Address', width=300, anchor='c')
+student_table.column('Gender', width=100, anchor='c')
+student_table.column('D.O.B', width=150, anchor='c')
+student_table.column('Added Date', width=170, anchor='c')
+student_table.column('Added Time', width=150, anchor='c')
 
 student_table.pack(fill=BOTH, expand=1)
 
